@@ -1,2 +1,3 @@
-# packer-ubuntu-nvidia-pytorch-aws-amimi
-A packer script to generate AWS AMI with Ubuntu, NVIDIA GPU Drivers, Python, Pytorch and more.
+# A Packer script for AWS AMI
+
+A packer script that generates AWS AMI with Ubuntu, NVIDIA GPU Drivers, Python, Pytorch and more.
