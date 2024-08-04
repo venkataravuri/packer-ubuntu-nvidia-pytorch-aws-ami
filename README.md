@@ -21,9 +21,30 @@ distro = <Ubuntu Distribution Name> e.g., "ubuntu2404"
 arch = e.g., "x86_64"
 ```
 
+### Install AWS Cli
+
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+### AWS Configure SSO
+
+```
+aws configure sso
+```
+
+
 ### Create ML Optimized AWS AMI
+
+```
+packer init .
+```
 
 ```
 packer build -var-file="variables.pkrvars.hcl" aws-ubuntu.pkr.hcl
 ```
 
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1

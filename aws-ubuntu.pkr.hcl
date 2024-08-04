@@ -73,8 +73,8 @@ build {
       "sudo apt-get install -y nvidia-open",
       "sudo apt-get install -y nvidia-utils-560",
       "export CUDA_HOME=/usr/local/cuda",
-      "export PATH=${CUDA_HOME}/bin:${PATH}",
-      "export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:$LD_LIBRARY_PATH",
+      "export PATH=$${CUDA_HOME}/bin:$${PATH}",
+      "export LD_LIBRARY_PATH=$${CUDA_HOME}/lib64:$$LD_LIBRARY_PATH",
       "sudo reboot"
     ]
   }
@@ -82,10 +82,30 @@ build {
   provisioner "shell" {
     pause_before = "20s"
     inline = [
-      "echo Installing Python",
-      "sudo apt-get install -y python3",
-      "sudo apt-get install -y python3-pip",
-      "sudo apt-get install -y python3-venv"
+      "echo Adding Python repo to apt",
+      "sudo add-apt-repository -y ppa:deadsnakes/ppa"
+    ]
+  }
+
+  provisioner "shell" {
+    pause_before = "20s"
+    inline = [
+      "echo Download KITTI dataset",
+      "sudo mkdir /data",
+      "sudo mkdir /data/kitti",
+      "sudo apt-get install -y unzip",
+      "echo Download left color images of object data set - 12 GB",
+      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_image_2.zip",
+      "sudo unzip -q -o data_object_image_2.zip -d /data/kitti/",
+      "echo Download Velodyne point clouds, if you want to use laser information = 29 GB",
+      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_velodyne.zip",
+      "sudo unzip -q -o data_object_velodyne.zip -d /data/kitti/",
+      "echo Download camera calibration matrices of object data set - 16 MB",
+      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_calib.zip",
+      "sudo unzip -q -o data_object_calib.zip -d /data/kitti/",
+      "echo Download training labels of object data set - 5 MB",
+      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_label_2.zip",
+      "sudo unzip -q -o data_object_label_2.zip -d /data/kitti/",
     ]
   }
 
