@@ -60,6 +60,14 @@ build {
   ]
 
   provisioner "shell" {
+    pause_before = "20s"
+    inline = [
+      "echo Install gcc",
+      "sudo apt-get install -y gcc"
+    ]
+  }
+
+  provisioner "shell" {
     expect_disconnect = true
     inline = [
       "echo Installing NVIDIA drivers and CUDA Toolkit",
@@ -110,3 +118,7 @@ build {
   }
 
 }
+
+sudo apt-get remove --auto-remove python3-pip
+
+sudo apt-get remove --auto-remove python3
