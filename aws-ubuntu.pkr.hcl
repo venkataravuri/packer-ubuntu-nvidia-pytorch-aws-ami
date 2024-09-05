@@ -60,10 +60,20 @@ build {
   ]
 
   provisioner "shell" {
-    pause_before = "20s"
+    pause_before = "10s"
     inline = [
       "echo Install gcc",
       "sudo apt-get install -y gcc"
+    ]
+  }
+
+  provisioner "shell" {
+    pause_before = "10s"
+    inline = [
+      "echo Uninstall existing Python and install Python3.11",
+      "sudo rm -f /usr/bin/python3",
+      "sudo rm -f -r /usr/local/lib/python3.12",
+      "sudo apt-get install -y python3.11"
     ]
   }
 
