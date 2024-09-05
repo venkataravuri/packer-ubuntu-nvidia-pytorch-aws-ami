@@ -27,7 +27,7 @@ locals {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name                    = "ubuntu-nvidia-pytorch-ami-${local.timestamp}"
+  ami_name                    = "ami-ml-optimized-ubuntu${local.timestamp}"
   instance_type               = "g5.xlarge"
   profile                     = "${var.aws_sso_profile}"
   region                      = "${var.region}"
@@ -54,7 +54,7 @@ source "amazon-ebs" "ubuntu" {
 }
 
 build {
-  name = "ubuntu-ml-optimized-ami"
+  name = "ami-ml-optimized-ubuntu"
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
@@ -73,7 +73,9 @@ build {
       "echo Uninstall existing Python and install Python3.11",
       "sudo rm -f /usr/bin/python3",
       "sudo rm -f -r /usr/local/lib/python3.12",
-      "sudo apt-get install -y python3.11"
+      "sudo add-apt-repository -y ppa:deadsnakes/ppa",
+      "sudo apt-get install -y python3.11",
+      "sudo apt install python3-pip",
     ]
   }
 
@@ -96,39 +98,4 @@ build {
       "sudo reboot"
     ]
   }
-
-  provisioner "shell" {
-    pause_before = "20s"
-    inline = [
-      "echo Adding Python repo to apt",
-      "sudo add-apt-repository -y ppa:deadsnakes/ppa"
-    ]
-  }
-
-  provisioner "shell" {
-    pause_before = "20s"
-    inline = [
-      "echo Download KITTI dataset",
-      "sudo mkdir /data",
-      "sudo mkdir /data/kitti",
-      "sudo apt-get install -y unzip",
-      "echo Download left color images of object data set - 12 GB",
-      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_image_2.zip",
-      "sudo unzip -q -o data_object_image_2.zip -d /data/kitti/",
-      "echo Download Velodyne point clouds, if you want to use laser information = 29 GB",
-      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_velodyne.zip",
-      "sudo unzip -q -o data_object_velodyne.zip -d /data/kitti/",
-      "echo Download camera calibration matrices of object data set - 16 MB",
-      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_calib.zip",
-      "sudo unzip -q -o data_object_calib.zip -d /data/kitti/",
-      "echo Download training labels of object data set - 5 MB",
-      "wget -q https://s3.eu-central-1.amazonaws.com/avg-kitti/data_object_label_2.zip",
-      "sudo unzip -q -o data_object_label_2.zip -d /data/kitti/",
-    ]
-  }
-
 }
-
-sudo apt-get remove --auto-remove python3-pip
-
-sudo apt-get remove --auto-remove python3
